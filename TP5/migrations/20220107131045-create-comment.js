@@ -21,7 +21,6 @@ module.exports = {
           key: 'id'
         },
         allowNull: false,
-        onDelete: 'CASCADE'
       },
       postId: {
         type: Sequelize.UUID,

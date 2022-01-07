@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Post } = require("../models");
 
 module.exports = function (app) {
     app.get("/users", async (req, res) => {
@@ -14,7 +14,12 @@ module.exports = function (app) {
     app.get("/user/:id", async (req, res) => {
         try {
             const user = await User.findOne({ where: { id: req.params.id } });
-            res.json(user);
+            if (req.query && req.query.posts == "yes") {
+                const posts = await Post.findAll({
+                    where: {userId: user.id}
+                });
+                res.send({ "user": user, "posts": posts })
+            } else res.send({ "user": user })
         } catch (e) {
             console.log(e)
             res.send("Erreur !");

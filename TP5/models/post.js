@@ -12,9 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Post.belongsTo(models.User, {
         foreignKey: {
-          name: 'userId',
-          type: DataTypes.UUID,
-          allowNull: false
+          name: 'id',
         },
         onDelete: 'CASCADE',
       });
@@ -31,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     content: DataTypes.STRING,
     title: DataTypes.STRING,
     date: DataTypes.DATE,
-    author: DataTypes.UUID
+    userId: DataTypes.UUID
   }, {
     sequelize,
     modelName: 'Post',

@@ -1,4 +1,4 @@
-const { Post } = require("../models");
+const { Post, Comment } = require("../models");
 
 module.exports = function (app) {
     app.get("/posts", async (req, res) => {
@@ -14,7 +14,12 @@ module.exports = function (app) {
     app.get("/post/:id", async (req, res) => {
         try {
             const post = await Post.findOne({ where: { id: req.params.id } });
-            res.json(post);
+            if (req.query && req.query.comments == "yes") {
+                const comments = await Comment.findAll({
+                    where: {postId: post.id}
+                });
+                res.send({ "post": post, "comments": comments })
+            } else res.send({ "post": post })
         } catch (e) {
             console.log(e)
             res.send("Erreur !");
@@ -23,7 +28,7 @@ module.exports = function (app) {
 
     app.patch("/post/:id", async (req, res) => {
         try {
-            const role = await Post.update(req.body, {
+            const post = await Post.update(req.body, {
                 where: {
                     id: req.params.id
                 }

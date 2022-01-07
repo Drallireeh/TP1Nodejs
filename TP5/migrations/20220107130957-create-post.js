@@ -17,16 +17,14 @@ module.exports = {
       date: {
         type: Sequelize.DATE
       },
-      author: {
+      userId: {
         type: Sequelize.UUID,
         references: {
-          model: {
-            tableName: 'Users',
-            schema: 'schema'
-          },
+          model: 'Users',
           key: 'id'
         },
-        allowNull: false
+        allowNull: false,
+        onDelete: 'CASCADE'
       },
       createdAt: {
         allowNull: false,

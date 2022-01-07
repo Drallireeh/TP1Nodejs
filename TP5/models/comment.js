@@ -11,15 +11,33 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Comment.belongsTo(models.User, {
-        foreignKey: 'author'
+        foreignKey: {
+          name: 'userId',
+          type: DataTypes.UUID,
+          allowNull: false
+        },
       });
-      Comment.hasOne(models.Post);
+      Comment.belongsTo(models.Post, {
+        foreignKey: {
+          name: 'postId',
+          type: DataTypes.UUID,
+          allowNull: false
+        },
+        onDelete: 'CASCADE'
+      });
     }
   };
   Comment.init({
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+      allowNull: false,
+    },
     content: DataTypes.STRING,
     date: DataTypes.DATE,
-    author: DataTypes.UUID
+    userId: DataTypes.UUID,
+    postId: DataTypes.UUID
   }, {
     sequelize,
     modelName: 'Comment',

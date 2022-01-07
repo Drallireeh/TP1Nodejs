@@ -12,7 +12,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       User.hasMany(models.Post);
       User.hasMany(models.Comment);
-      User.hasOne(models.Role);
+      User.hasOne(models.Role, {
+        foreignKey: {
+          name: 'id',
+          type: DataTypes.UUID,
+          allowNull: true
+        }
+      });
     }
   };
   User.init({

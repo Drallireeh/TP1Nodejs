@@ -23,6 +23,14 @@ module.exports = {
       github: {
         type: Sequelize.STRING
       },
+      roleId: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'Roles',
+          key: 'id'
+        },
+        allowNull: true
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

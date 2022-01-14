@@ -1,7 +1,33 @@
 const { Role } = require("../models");
+const Joi = require("joi");
+const validation = require("express-joi-validation").createValidator({});
+
+const registerRoleSchema = Joi.object({
+    name: Joi.string().required()
+});
+
+const updateRoleSchema = Joi.object({
+    name: Joi.string()
+});
+
+const roleDefinition = Joi.object({
+    id: Joi.string().required(),
+    name: Joi.string().required(),
+    createdAt: Joi.required(),
+    updatedAt: Joi.required()
+}).unknown(true);
+
+const getRoleSchema = Joi.object({
+    id: Joi.string().required(),
+    name: Joi.string().required(),
+    createdAt: Joi.required(),
+    updatedAt: Joi.required()
+}).unknown(true);
+
+const getRolesSchema = Joi.array().items(roleDefinition).required();
 
 module.exports = function (app) {
-    app.get("/roles", async (req, res) => {
+    app.get("/roles", validation.response(getRolesSchema), async (req, res) => {
         try {
             const roles = await Role.findAll();
             res.json(roles);
@@ -11,7 +37,7 @@ module.exports = function (app) {
         }
     });
 
-    app.get("/role/:id", async (req, res) => {
+    app.get("/role/:id", validation.response(getRoleSchema), async (req, res) => {
         try {
             const role = await Role.findOne({ where: { id: req.params.id } });
             res.json(role);
@@ -21,7 +47,7 @@ module.exports = function (app) {
         }
     });
 
-    app.patch("/role/:id", async (req, res) => {
+    app.patch("/role/:id", validation.body(updateRoleSchema), async (req, res) => {
         try {
             const role = await Role.update(req.body, {
                 where: {
@@ -35,7 +61,7 @@ module.exports = function (app) {
         }
     });
 
-    app.post("/roles/create", async (req, res) => {
+    app.post("/roles/create", validation.body(registerRoleSchema), async (req, res) => {
         try {
             const role = await Role.create(req.body);
             res.end();

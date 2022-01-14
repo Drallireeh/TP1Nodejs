@@ -2,6 +2,7 @@ const express = require('express');
 const Joi = require("joi");
 const validation = require("express-joi-validation").createValidator({});
 const router = express.Router();
+const { addContextHeader } = require("../middlewares/post.middleware");
 
 const registerPostSchema = Joi.object({
     title: Joi.string().required(),
@@ -48,6 +49,9 @@ const getPostsSchema = Joi.array().items(postDefinition).required();
 const querySchema = Joi.object({
     comments: Joi.boolean()
 });
+
+router.use(addContextHeader);
+
 const {
   createPost,
   updatePost,

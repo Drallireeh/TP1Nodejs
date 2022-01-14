@@ -2,6 +2,7 @@ const express = require('express');
 const Joi = require("joi");
 const validation = require("express-joi-validation").createValidator({});
 const router = express.Router();
+const { addContextHeader } = require("../middlewares/comment.middleware");
 
 const registerCommentSchema = Joi.object({
     content: Joi.string().required(),
@@ -36,6 +37,8 @@ const getCommentSchema = Joi.object({
 }).unknown(true);
 
 const getCommentsSchema = Joi.array().items(commentDefinition).required();
+
+router.use(addContextHeader);
 
 const {
   createComment,

@@ -1,6 +1,7 @@
 const { User, Post } = require("../models");
+const createError = require('http-errors');
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
     try {
         const user = await User.create({
             firstname: req.body.firstname,
@@ -12,11 +13,11 @@ const createUser = async (req, res) => {
         res.end();
     } catch (e) {
         console.log(e)
-        res.send("Erreur !");
+        return next(createError(500));
     }
 }
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
     try {
         const user = await User.update(req.body, {
             where: {
@@ -26,21 +27,21 @@ const updateUser = async (req, res) => {
         res.end();
     } catch (e) {
         console.log(e)
-        res.send("Erreur !");
+        return next(createError(404));
     }
 }
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
     try {
         await User.destroy({ where: { id: req.params.id } });
         res.end();
     } catch (e) {
         console.log(e)
-        res.send("Erreur !");
+        return next(createError(404));
     }
 }
 
-const getOneUser = async (req, res) => {
+const getOneUser = async (req, res, next) => {
     try {
         const user = await User.findOne({ where: { id: req.params.id } });
         if (req.query && req.query.posts == true) {
@@ -51,17 +52,17 @@ const getOneUser = async (req, res) => {
         } else res.send({ "user": user })
     } catch (e) {
         console.log(e)
-        res.send("Erreur !");
+        return next(createError(404));
     }
 }
 
-const getManyUsers = async (req, res) => {
+const getManyUsers = async (req, res, next) => {
     try {
         const users = await User.findAll();
         res.json(users);
     } catch (e) {
         console.log(e)
-        res.send("Erreur !");
+        return next(createError(500));
     }
 }
 

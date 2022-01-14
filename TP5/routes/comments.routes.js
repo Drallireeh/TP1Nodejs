@@ -1,6 +1,6 @@
 const express = require('express');
 const Joi = require("joi");
-const validation = require("express-joi-validation").createValidator({});
+const validation = require("express-joi-validation").createValidator({passError: true});
 const router = express.Router();
 const { addContextHeader } = require("../middlewares/comment.middleware");
 

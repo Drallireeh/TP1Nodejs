@@ -53,6 +53,10 @@ const getUserSchema = Joi.object({
 
 const getUsersSchema = Joi.array().items(userDefinition).required();
 
+const querySchema = Joi.object({
+    posts: Joi.boolean()
+});
+
 module.exports = function (app) {
     app.get("/users", validation.response(getUsersSchema), async (req, res) => {
         try {
@@ -64,10 +68,10 @@ module.exports = function (app) {
         }
     });
 
-    app.get("/user/:id", validation.response(getUserSchema), async (req, res) => {
+    app.get("/user/:id", validation.response(getUserSchema), validation.query(querySchema), async (req, res) => {
         try {
             const user = await User.findOne({ where: { id: req.params.id } });
-            if (req.query && req.query.posts == "yes") {
+            if (req.query && req.query.posts == true) {
                 const posts = await Post.findAll({
                     where: { userId: user.id }
                 });

@@ -44,6 +44,10 @@ const getPostSchema = Joi.object({
 
 const getPostsSchema = Joi.array().items(postDefinition).required();
 
+const querySchema = Joi.object({
+    comments: Joi.boolean()
+});
+
 module.exports = function (app) {
     app.get("/posts", validation.response(getPostsSchema), async (req, res) => {
         try {
@@ -55,10 +59,11 @@ module.exports = function (app) {
         }
     });
 
-    app.get("/post/:id", validation.response(getPostSchema), async (req, res) => {
+    app.get("/post/:id", validation.response(getPostSchema), validation.query(querySchema), async (req, res) => {
         try {
             const post = await Post.findOne({ where: { id: req.params.id } });
-            if (req.query && req.query.comments == "yes") {
+            console.log(req.query)
+            if (req.query && req.query.comments == true) {
                 const comments = await Comment.findAll({
                     where: {postId: post.id}
                 });
